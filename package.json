@@ -1,0 +1,20 @@
+{
+  "name": "mining",
+  "version": "1.0.0",
+  "description": "",
+  "main": "mining.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "franc": "^1.1.2",
+    "mongodb": "^2.1.4",
+    "natural": "^0.2.1",
+    "nightmare": "^2.1.6",
+    "request": "^2.69.0",
+    "twitter": "^1.2.5"
+  }
+}
