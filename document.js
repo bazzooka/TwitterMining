@@ -124,7 +124,9 @@ var miningDocuments = function(){
                       {multi: true}
                     );
                   }
+
                   crawledUrls++;
+                  console.log(crawledUrls, l)
                   if(crawledUrls === l){
                     db.close();
                     tryMiningDocuments();
