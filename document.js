@@ -66,6 +66,8 @@ var miningDocuments = function(){
                     if (status !== 'success') {
                       console.error("phantom: error opening " + documents[doc_index], status);
                       ph.exit();
+                      db.close();
+                      tryMiningDocuments();
                     } else {
                       // timeOut
                       global.setTimeout(function () {
