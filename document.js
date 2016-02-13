@@ -66,7 +66,16 @@ var miningDocuments = function(){
                     if (status !== 'success') {
                       console.error("phantom: error opening " + documents[doc_index], status);
                       ph.exit();
-                      db.close();
+
+
+		     db.collection('tweet').update(
+                        {id: doc.id},
+                        { $set: { "crawled" : true, "onDocError": true } },
+                        {multi: true}
+                      );
+
+
+                     // db.close();
                       tryMiningDocuments();
                     } else {
                       // timeOut
@@ -80,15 +89,12 @@ var miningDocuments = function(){
                           }, function (result) {
                               ph.exit(); // EXTREMLY IMPORTANT
 
-
-
                               var html = result.html;
                               var title = result.title;
                               var url = result.url;
                               var $ = cheerio.load(html); //use cheerio for jqeury in node
                               var text = $('body').text(),
                                 nbWord = 0;
-
 
                             // console.log(arguments);
 
@@ -123,21 +129,23 @@ var miningDocuments = function(){
                                   url: documents[doc_index],
                                   true_url: url,
                                   title: title,
-                                  user_id: doc.user.id,
+                                  user_id: doc.user.id+'',
                                   screen_name: doc.user.screen_name,
                                   nbWord: nbWord,
                                   lang: isENG,
                                   crawled_at: Date.now()
-                                });
+                                }, function(err, results){;
+					console.log(err);
+				});
 
                                 db.collection('tweet').update(
-                                  {id: doc.id},
+                                  {id: doc.id+''},
                                   { $set: { "crawled" : true } },
                                   {multi: true}
                                 );
                               } else {
                                 db.collection('tweet').update(
-                                  {id: doc.id},
+                                  {id: doc.id+''},
                                   { $set: { "crawled" : true, "foreign": true } },
                                   {multi: true}
                                 );
@@ -146,7 +154,7 @@ var miningDocuments = function(){
                               crawledUrls++;
                               console.log(crawledUrls, l)
                               if(crawledUrls === l){
-                                db.close();
+                                // db.close();
                                 tryMiningDocuments();
                               }
 
