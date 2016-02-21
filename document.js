@@ -121,30 +121,30 @@ var miningDocuments = function(){
                         { $set: { "crawled" : true } },
                         {multi: true}
                       );
-                    } catch(error){
+                    } else {
                       db.collection('tweet').update(
                         {id: doc.id},
-                        { $set: { "crawled" : true, "onError": true } },
+                        { $set: { "crawled" : true, "foreign": true } },
                         {multi: true}
                       );
+                    }
+
+
+                    crawledUrls++;
+                    console.log(crawledUrls, l)
+                    if(crawledUrls === l){
+                      // db.close();
                       tryMiningDocuments();
                     }
-                  } else {
+
+                  } catch(error){
                     db.collection('tweet').update(
                       {id: doc.id},
-                      { $set: { "crawled" : true, "foreign": true } },
+                      { $set: { "crawled" : true, "onError": true } },
                       {multi: true}
                     );
-                  }
-
-
-                  crawledUrls++;
-                  console.log(crawledUrls, l)
-                  if(crawledUrls === l){
-                    // db.close();
                     tryMiningDocuments();
                   }
-
 
                 } else {
                   db.collection('tweet').update(
