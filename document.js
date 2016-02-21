@@ -148,6 +148,11 @@ var miningDocuments = function(){
             }
           })(i, doc);
         }
+      } else {
+        setTimeout(function(){
+          tryMiningDocuments();
+        }, 5000);
+
       }
     }
   );
