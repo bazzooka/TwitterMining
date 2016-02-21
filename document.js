@@ -64,60 +64,71 @@ var miningDocuments = function(){
             try {
               var r = request({url: documents[doc_index], timeout: 1000 * 10}, function (error, response, html) {
                 if (!error && response.statusCode == 200) {
-                  var $ = cheerio.load(html);
-                  var title = $('title').text();
-                  var url = response.request.uri.href;
 
-                  console.log(title);
-                  console.log(url);
+                  try{
 
-                  // Get text
-                  var text = $('body').text(),
-                    nbWord = 0;
+                    var $ = cheerio.load(html);
+                    var title = $('title').text();
+                    var url = response.request.uri.href;
 
-                  text = text.replace(/\s+/g, " ")
-                    .replace(/[^a-zA-Z ]/g, "")
-                    .toLowerCase();
+                    console.log(title);
+                    console.log(url);
 
-                  var isENG = false;
-                  var languages = franc.all(text);
+                    // Get text
+                    var text = $('body').text(),
+                      nbWord = 0;
 
-                  // get language
-                  for(var i = 0, ll = languages.length; i < 3 && i < ll; i++){
-                    if(languages[i][0] === 'eng'){
-                      isENG = languages[i][0];
-                      break;
-                    }
-                  }
+                    text = text.replace(/\s+/g, " ")
+                      .replace(/[^a-zA-Z ]/g, "")
+                      .toLowerCase();
 
-                  if(isENG){
-                    // Split on spaces for a list of all the words on that page and
-                    // loop through that list.
-                    text.split(" ").forEach(function (word) {
-                      // We don't want to include very short or long words because they're
-                      // probably bad data.
-                      if (config.topics[word]) {
-                        nbWord++;
+                    var isENG = false;
+                    var languages = franc.all(text);
+
+                    // get language
+                    for(var i = 0, ll = languages.length; i < 3 && i < ll; i++){
+                      if(languages[i][0] === 'eng'){
+                        isENG = languages[i][0];
+                        break;
                       }
-                    });
+                    }
 
-                    db.collection('docs').insertOne({
-                      id: doc.id,
-                      url: documents[doc_index],
-                      true_url: url,
-                      title: title.toString().trim(),
-                      user_id: doc.user.id,
-                      screen_name: doc.user.screen_name,
-                      nbWord: nbWord,
-                      lang: isENG,
-                      crawled_at: Date.now()
-                    });
+                    if(isENG){
+                      // Split on spaces for a list of all the words on that page and
+                      // loop through that list.
+                      text.split(" ").forEach(function (word) {
+                        // We don't want to include very short or long words because they're
+                        // probably bad data.
+                        if (config.topics[word]) {
+                          nbWord++;
+                        }
+                      });
 
-                    db.collection('tweet').update(
-                      {id: doc.id},
-                      { $set: { "crawled" : true } },
-                      {multi: true}
-                    );
+                      db.collection('docs').insertOne({
+                        id: doc.id,
+                        url: documents[doc_index],
+                        true_url: url,
+                        title: title.toString().trim(),
+                        user_id: doc.user.id,
+                        screen_name: doc.user.screen_name,
+                        nbWord: nbWord,
+                        lang: isENG,
+                        crawled_at: Date.now()
+                      });
+
+                      db.collection('tweet').update(
+                        {id: doc.id},
+                        { $set: { "crawled" : true } },
+                        {multi: true}
+                      );
+                    } catch(error){
+                      db.collection('tweet').update(
+                        {id: doc.id},
+                        { $set: { "crawled" : true, "onError": true } },
+                        {multi: true}
+                      );
+                      tryMiningDocuments();
+                    }
                   } else {
                     db.collection('tweet').update(
                       {id: doc.id},
