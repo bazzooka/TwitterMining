@@ -53,7 +53,7 @@ var listenTweeter = function(){
         created_at : tweet.created_at,
         id: tweet.id_str,
         text: tweet.text,
-        urls: tweet.text.match(urlRegExp),
+        urls: tweet.text ? tweet.text.match(urlRegExp) : [],
         retweet_count: tweet.retweet_count,
         favorite_count: tweet.favorite_count,
         timestamp_ms: tweet.timestamp_ms,
