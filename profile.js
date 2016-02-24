@@ -18,7 +18,10 @@ var regTopics = new RegExp(config.topics.join('|'), 'gi');
 
 
 MongoClient.connect("mongodb://localhost:27017/twitter", function(err, database) {
-  if(err) throw "DB connection error";
+  if(err){
+    throw err;
+    process.exit();
+  }
 
   db = database;
 
