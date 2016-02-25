@@ -64,6 +64,8 @@ var miningDocuments = function(){
             console.log("scrap url ", documents[doc_index], doc._id);
             try {
               var r = request({url: documents[doc_index], timeout: 1000 * 10}, function (error, response, html) {
+                console.log(arguments);
+                timerTimeout && clearTimeout(timerTimeout)
                 if (!error && response.statusCode == 200) {
 
                   try{
@@ -156,6 +158,16 @@ var miningDocuments = function(){
                   tryMiningDocuments();
                 }
               });
+
+              var timerTimeout = global.setTimeout(function( ) {
+                r.abort();
+                db.collection('tweet').update(
+                  {id: doc.id},
+                  { $set: { "crawled" : true, "onError": true } },
+                  {multi: true}
+                );
+                tryMiningDocuments();
+              }, 5*1000);
 
             } catch(err){
               console.log(err);
