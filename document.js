@@ -17,6 +17,7 @@ var tryMiningDocuments = function(){
 
     MongoClient.connect("mongodb://localhost:27017/twitter", function(err, database) {
       if(err) {
+        console.log(err);
         throw err;
         process.exit();
       }

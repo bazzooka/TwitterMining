@@ -24,6 +24,7 @@ var urlRegExp = new RegExp('https?:(?:/{1,3})([A-z0-9./-])*', 'gi');
 
 MongoClient.connect("mongodb://localhost:27017/twitter", function(err, database) {
   if(err){
+    console.log(err);
     throw err;
     process.exit();
   }
