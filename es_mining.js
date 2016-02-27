@@ -15,18 +15,6 @@ var elastic = new ElasticSearch();
 
 var urlRegExp = new RegExp('https?:(?:/{1,3})([A-z0-9./-])*', 'gi');
 
-infinitListenTweeter();
-
-var infinitListenTweeter = function(){
-  try{
-    listenTweeter();
-  } catch(error){
-    setTimeout(function(){
-      listenTweeter();
-    }, 16 * 1000 * 60); // Retry every 16 minutes API rate at 15min
-  }
-}
-
 var listenTweeter = function(){
   /**
    * Stream statuses filtered by keyword
@@ -59,8 +47,10 @@ var listenTweeter = function(){
             screen_name: tweet.retweeted_status.user.screen_name
           }
         }
+        console.log(tweet);
+      } else {
+        console.log(to_save.text);
       }
-
 
       // var myTweet = db.collection('tweet').findOne(
       //   {id: tweet.id_str},
@@ -72,13 +62,28 @@ var listenTweeter = function(){
       // );
 
     });
-
+	
     stream.on('error', function(error) {
       console.log(error);
       throw error
     });
-  });
+  });i
 };
+
+var infinitListenTwitter = function(){
+  try{
+    listenTweeter();
+  } catch(error){
+console.log(error);
+    setTimeout(function(){
+      listenTweeter();
+    }, 16 * 1000 * 60); // Retry every 16 minutes API rate at 15min
+  }
+}
+
+infinitListenTwitter();
+
+
 
 // var saveUserInDB = function(tweet){
 //   db.collection('tweet').insertOne(tweet)
