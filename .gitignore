@@ -1,6 +1,7 @@
 node_modules
 data/
 auth.js
+*.swp
 
 .sass-cache/
 bower_components/
