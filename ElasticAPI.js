@@ -1,5 +1,7 @@
 var elasticsearch = require('elasticsearch');
 
+var myIndex = 'tweet_test';
+
 var ElasticSearch = function (){
   var client = new elasticsearch.Client({
     host: 'localhost:9200',
@@ -24,7 +26,7 @@ ElasticSearch.prototype.ping = function(){
 
 ElasticSearch.prototype.insertTweet = function(tweet){
   return this.client.create({
-    index: 'tweet_test',
+    index: myIndex,
     type: 'tweet',
     body: tweet
   });
@@ -32,9 +34,18 @@ ElasticSearch.prototype.insertTweet = function(tweet){
 
 ElasticSearch.prototype.findTweet = function(query){
   return this.client.search({
-    index: 'tweet_test',
+    index: myIndex,
     query: query
   })
+}
+
+ElasticSearch.prototype.existTweet = function(tweetId){
+  return this.client.exists({
+    index: myIndex,
+    type: 'tweet',
+    _id: tweetId 
+  });
+
 }
 
 module.exports = ElasticSearch;
