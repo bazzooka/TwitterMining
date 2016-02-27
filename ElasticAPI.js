@@ -38,4 +38,3 @@ ElasticSearch.prototype.findTweet = function(query){
 }
 
 module.exports = ElasticSearch;
-
