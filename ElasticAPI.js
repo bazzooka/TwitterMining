@@ -1,6 +1,6 @@
 var elasticsearch = require('elasticsearch');
 
-var myIndex = 'tweet_test';
+var tweetIndex = 'tweet_test';
 
 var ElasticSearch = function (){
   var client = new elasticsearch.Client({
@@ -26,26 +26,45 @@ ElasticSearch.prototype.ping = function(){
 
 ElasticSearch.prototype.insertTweet = function(tweet){
   return this.client.create({
-    index: myIndex,
+    index: tweetIndex,
     type: 'tweet',
     body: tweet
   });
 }
 
+ElasticSearch.prototype.updateTweet = function(tweetId, newInfos){
+  console.log(newInfos, tweetId);
+  return this.client.update({
+    index: tweetIndex,
+    type: 'tweet',
+    id: tweetId,
+    body: {
+      doc: newInfos
+    }
+  });
+}
+
 ElasticSearch.prototype.findTweet = function(query){
   return this.client.search({
-    index: myIndex,
-    query: query
+    index: tweetIndex,
+    body: {
+      query: query
+    }
   })
 }
 
 ElasticSearch.prototype.existTweet = function(tweetId){
   return this.client.exists({
-    index: myIndex,
+    index: tweetIndex,
     type: 'tweet',
-    _id: tweetId 
+    _id: tweetId
   });
+}
 
+ElasticSearch.prototype.countTweet = function(){
+  return this.client.count({
+    index: tweetIndex
+  });
 }
 
 module.exports = ElasticSearch;

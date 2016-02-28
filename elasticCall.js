@@ -4,6 +4,31 @@ var elastic = new ElasticSearch();
 
 // elastic.ping();
 
+
+
+
+// elastic.countTweet().then(function(res){console.log(res);})
+// elastic.findTweet({
+//   'filtered': {
+//     'filter': {
+//       'bool': {
+//         'must': [
+//             // profiled is undefined
+//             {
+//               'term': {
+//                 '_id': 'AVMlM-aNLSNV_9wOg9Kv'
+//               }
+//             }
+//         ]
+//       }
+//     }
+//   }
+// })
+// .then(function(res){console.log(res.hits);})
+
+elastic.updateTweet('AVMlM-aNLSNV_9wOg9Kv', {'profiled': true})
+
+
 /*
 elastic.insertTweet(
   {
@@ -38,4 +63,3 @@ elastic.findTweet({user: {name:'Orlando Alvelo'}})
 */
 
 //elastic.existTweet
-
