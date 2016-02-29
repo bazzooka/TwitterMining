@@ -4,7 +4,12 @@ var elastic = new ElasticSearch();
 
 // elastic.ping();
 
+// elastic.findTweet().then(function(res){console.log(res.hits.hits);});
 
+
+// elastic.updateAllTweet({profiled: false}).then(function(res){console.log(res);});
+
+// elastic.findTweet().then(function(res){console.log(res);});
 
 
 // elastic.countTweet().then(function(res){console.log(res);})
@@ -26,7 +31,7 @@ var elastic = new ElasticSearch();
 // })
 // .then(function(res){console.log(res.hits);})
 
-elastic.updateTweet('AVMlM-aNLSNV_9wOg9Kv', {'profiled': true})
+// elastic.updateTweet('AVMlM-aNLSNV_9wOg9Kv', {'profiled': true})
 
 
 /*

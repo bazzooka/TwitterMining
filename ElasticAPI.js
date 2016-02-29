@@ -2,6 +2,8 @@ var elasticsearch = require('elasticsearch');
 
 var tweetIndex = 'tweet_test';
 
+/** START TWEET API **/
+
 var ElasticSearch = function (){
   var client = new elasticsearch.Client({
     host: 'localhost:9200',
@@ -33,11 +35,20 @@ ElasticSearch.prototype.insertTweet = function(tweet){
 }
 
 ElasticSearch.prototype.updateTweet = function(tweetId, newInfos){
-  console.log(newInfos, tweetId);
   return this.client.update({
     index: tweetIndex,
     type: 'tweet',
     id: tweetId,
+    body: {
+      doc: newInfos
+    }
+  });
+}
+
+ElasticSearch.prototype.updateAllTweet = function(newInfos){
+  return this.client.update({
+    index: tweetIndex,
+    type: 'tweet',
     body: {
       doc: newInfos
     }
@@ -66,5 +77,62 @@ ElasticSearch.prototype.countTweet = function(){
     index: tweetIndex
   });
 }
+
+ElasticSearch.prototype.deleteTweet = function(tweetId){
+  return this.client.update({
+    index: tweetIndex,
+    type: 'tweet',
+    _id: tweetId
+  });
+}
+/** END TWEET API **/
+
+/** START PROFIL API **/
+
+ElasticSearch.prototype.insertProfil = function(profil){
+  return this.client.create({
+    index: tweetIndex,
+    type: 'profil',
+    body: profil
+  });
+}
+
+ElasticSearch.prototype.updateProfilCounter = function(profilId, script, doc){
+  return this.client.update({
+    index: tweetIndex,
+    type: 'profil',
+    id: profilId,
+    script: script,
+    doc: doc
+  });
+}
+
+ElasticSearch.prototype.findProfil = function(query){
+  return this.client.search({
+    index: tweetIndex,
+    type: 'profil',
+    query
+  })
+}
+
+ElasticSearch.prototype.findProfilById = function(profilId){
+  return this.client.search({
+    index: tweetIndex,
+    type: 'profil',
+    _id: profilId
+  })
+}
+
+/** END PROFIL API **/
+
+/** START TWEET_PROFIL **/
+ElasticSearch.prototype.insertTweetProfil = function(newTweetProfil){
+  return this.client.create({
+    index: tweetIndex,
+    type: 'tweetProfil',
+    body: newTweetProfil
+  });
+}
+/** END TWEET_PROFIL **/
 
 module.exports = ElasticSearch;
