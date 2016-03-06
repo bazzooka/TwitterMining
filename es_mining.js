@@ -57,7 +57,7 @@ var listenTwitter = function(){
       console.log(error);
       throw error
     });
-  });i
+  });
 };
 
 var infinitListenTwitter = function(){

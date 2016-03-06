@@ -6,10 +6,68 @@ var elastic = new ElasticSearch();
 
 // elastic.findTweet().then(function(res){console.log(res.hits.hits);});
 
+// elastic.findTweetProfil().then(function(res){console.log(res);});
 
-// elastic.updateAllTweet({profiled: false}).then(function(res){console.log(res);});
+// elastic.deleteTweet('AVMuBqxmLSNV_9wOg9OC')
+// .then(function(res){
+//
+// }).catch(function(err){
+//   console.log(err)
+// })
 
-// elastic.findTweet().then(function(res){console.log(res);});
+
+
+// elastic.updateProfilCounter(
+//   'AVNG6W9RdjCqbYXiLoho',
+//   {
+//     // update counters
+//     script: 'ctx._source.lastTweetId = lastTweetId; ctx._source.totalTweet += totalProceceedTweet; ctx._source.totalTweetRelated += nbTweetAdded',
+//     params: {
+//       totalProceceedTweet: 123,
+//       nbTweetAdded: 321,
+//       lastTweetId: 456
+//     }
+//   }
+// )
+// .then(function(res){console.log(res);})
+// .catch(function(error){console.log(error);})
+
+// elastic.findTweet({
+//   'filtered': {
+//     'filter': {
+//       'bool': {
+//         'should': [
+//             // profiled is undefined
+//             {
+//               'missing': {
+//                 'field': 'profiled'
+//               }
+//             }
+//             ,
+//             // profiled = false
+//             {
+//               'term': {
+//                   'profiled': false
+//               }
+//             }
+//         ]
+//       }
+//     }
+//   }
+// })
+// .then(function(res){console.log(res.hits.hits);})
+// .catch(function(err){console.log(err);});
+
+
+// elastic.updateTweet('AVMvM6kmLSNV_9wOg9XP', {profiled: false})
+// .then(function(res){console.log(res);})
+// .catch(function(error){console.log(error);})
+
+// elastic.findProfilById('AVNG6W9RdjCqbYXiLoho')
+// .then(function(res){console.log(res.hits.hits[0]);})
+// .catch(function(error){console.log(error);})
+
+// elastic.existTweet('AVNG3ko5djCqbYXiLogq').then(function(res){console.log(res);});
 
 
 // elastic.countTweet().then(function(res){console.log(res);})

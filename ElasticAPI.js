@@ -7,7 +7,7 @@ var tweetIndex = 'tweet_test';
 var ElasticSearch = function (){
   var client = new elasticsearch.Client({
     host: 'localhost:9200',
-    log: 'trace'
+    log: false //||'trace' 'debug'
   });
   this.client = client;
  // return client;
@@ -27,7 +27,7 @@ ElasticSearch.prototype.ping = function(){
 }
 
 ElasticSearch.prototype.insertTweet = function(tweet){
-  return this.client.create({
+  return this.client.index({
     index: tweetIndex,
     type: 'tweet',
     body: tweet
@@ -35,6 +35,7 @@ ElasticSearch.prototype.insertTweet = function(tweet){
 }
 
 ElasticSearch.prototype.updateTweet = function(tweetId, newInfos){
+  // console.log("2222222222", tweetId, newInfos);
   return this.client.update({
     index: tweetIndex,
     type: 'tweet',
@@ -45,19 +46,10 @@ ElasticSearch.prototype.updateTweet = function(tweetId, newInfos){
   });
 }
 
-ElasticSearch.prototype.updateAllTweet = function(newInfos){
-  return this.client.update({
-    index: tweetIndex,
-    type: 'tweet',
-    body: {
-      doc: newInfos
-    }
-  });
-}
-
 ElasticSearch.prototype.findTweet = function(query){
   return this.client.search({
     index: tweetIndex,
+    type: 'tweet',
     body: {
       query: query
     }
@@ -68,7 +60,7 @@ ElasticSearch.prototype.existTweet = function(tweetId){
   return this.client.exists({
     index: tweetIndex,
     type: 'tweet',
-    _id: tweetId
+    id: tweetId
   });
 }
 
@@ -79,10 +71,10 @@ ElasticSearch.prototype.countTweet = function(){
 }
 
 ElasticSearch.prototype.deleteTweet = function(tweetId){
-  return this.client.update({
+  return this.client.delete({
     index: tweetIndex,
     type: 'tweet',
-    _id: tweetId
+    id: tweetId
   });
 }
 /** END TWEET API **/
@@ -90,20 +82,40 @@ ElasticSearch.prototype.deleteTweet = function(tweetId){
 /** START PROFIL API **/
 
 ElasticSearch.prototype.insertProfil = function(profil){
-  return this.client.create({
+  console.log('create profil');
+  return this.client.index({
     index: tweetIndex,
     type: 'profil',
     body: profil
   });
 }
 
-ElasticSearch.prototype.updateProfilCounter = function(profilId, script, doc){
+ElasticSearch.prototype.updateProfil = function(profilId, doc){
   return this.client.update({
     index: tweetIndex,
     type: 'profil',
     id: profilId,
-    script: script,
-    doc: doc
+    body: {
+      doc: doc
+    }
+  });
+}
+
+ElasticSearch.prototype.updateProfilScript = function(profilId, script){
+  return this.client.update({
+    index: tweetIndex,
+    type: 'profil',
+    id: profilId,
+    body: script
+  });
+}
+
+ElasticSearch.prototype.updateProfilCounter = function(profilId, script){
+  return this.client.update({
+    index: tweetIndex,
+    type: 'profil',
+    id: profilId,
+    body: script
   });
 }
 
@@ -119,7 +131,7 @@ ElasticSearch.prototype.findProfilById = function(profilId){
   return this.client.search({
     index: tweetIndex,
     type: 'profil',
-    _id: profilId
+    id: profilId
   })
 }
 
@@ -127,12 +139,32 @@ ElasticSearch.prototype.findProfilById = function(profilId){
 
 /** START TWEET_PROFIL **/
 ElasticSearch.prototype.insertTweetProfil = function(newTweetProfil){
-  return this.client.create({
+  return this.client.index({
     index: tweetIndex,
     type: 'tweetProfil',
     body: newTweetProfil
   });
 }
+
+ElasticSearch.prototype.findTweetProfil = function(query){
+  return this.client.search({
+    index: tweetIndex,
+    type: 'tweetProfil',
+    query
+  })
+}
 /** END TWEET_PROFIL **/
+
+/** START DOCUMENT **/
+ElasticSearch.prototype.insertDocument = function(doc){
+  console.log('create document');
+  return this.client.index({
+    index: tweetIndex,
+    type: 'document',
+    body: doc
+  });
+}
+
+/** END DOCUMENT **/
 
 module.exports = ElasticSearch;
