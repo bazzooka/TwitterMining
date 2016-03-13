@@ -40,18 +40,21 @@ var exploreUrl = function exploreUrl(url){
             // text = text.replace(/<script.*>.*<\/script>/);
             text = html_strip.html_strip(text, strip_options);
 
+            var topicsLength = config.topics.length;
             if(textInEnglish(text)){
               // Split on spaces for a list of all the words on that page and
               // loop through that list.
               text.split(" ").forEach(function (word) {
                 // We don't want to include very short or long words because they're
                 // probably bad data.``
-                if (config.topics[word]) {
-                  nbWord++;
+
+                for(var i = 0; i < topicsLength; i++){
+                  if(word.toLowerCase().trim().indexOf(config.topics[i]) >=0){
+                    nbWord++;
+                  }
                 }
               });
-
-
+              // TO TEST !!
               // console.log({
               //   url: url,
               //   true_url: true_url,
