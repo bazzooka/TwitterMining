@@ -5,6 +5,7 @@ var ElasticSearch = require('./ElasticAPI');
 var auth = require('./auth.js');
 var config = require('./config.js');
 var franc = require('franc');
+var getTwitFromProfil = require('./getTwitFromProfil');
 
 var client = new Twitter({
   consumer_key: auth.consumer_key_profil,
@@ -184,79 +185,78 @@ var getLastTweetOfProfil = function(tweetParent, profilInDB){
 }
 
 var miningProfils = function(){
-  // Launch it every 4500ms due to twitter api rates
-  setInterval(function(){
-    // Find tweet that was not profiled
-    elastic.findTweet({
-      'filtered': {
-        'filter': {
-          'bool': {
-            'should': [
-                // profiled is undefined
-                {
-                  'missing': {
-                    'field': 'profiled'
-                  }
+  // Find tweet that was not profiled
+  elastic.findTweet({
+    'filtered': {
+      'filter': {
+        'bool': {
+          'should': [
+              // profiled is undefined
+              {
+                'missing': {
+                  'field': 'profiled'
                 }
-                ,
-                // profiled = false
-                {
-                  'term': {
-                      'profiled': false
-                  }
+              }
+              ,
+              // profiled = false
+              {
+                'term': {
+                    'profiled': false
                 }
-            ]
-          }
+              }
+          ]
         }
       }
-    })
-    .then(function(res){
-      var hits = res.hits.hits;
-      // if(hits.length === 0){ // No results
-      //   setTimeout(function(){
-      //     infinitMiningProfils();
-      //   }, 2 * 1000); // Try again in 2 minutes
-      //
-      // } else
-      if(hits.length !== 0){
-        for(var i = 0, l = hits.length; i < l; i++){
-          // Does the tweet is in english ?
-          var tweet = hits[i]._source;
-          // if(textInEnglish(tweet.text)){
-            // Does the profil was already in database
-            return getProfilById(tweet.user.id)
-              .then(function(res){
-
-                if(!res){   // Profil is unknown
-                  return getLastTweetOfProfil(hits[i], res);
-                } else if((Date.now() - res[0]._source.lastParsingDate) > (24 * 60 * 60 * dayBeforeProfilReparsing)) {
-                  // profil was profiled more than dayBeforeProfilReparsing
-                  return getLastTweetOfProfil(hits[i], res);
-                } else {
-                  return null;
-                }
-              });
-              // .then(function(res){
-              //   infinitMiningProfils();
-              // })
-              // .catch(function(error){
-              //   console.log('tag2');
-              //   console.log(error);
-              // })
-          // } else {
-          //   // Delete this foreign tweet
-          //   console.log("before delete");
-          //   return elastic.deleteTweet(hits[i]._id);
-          // }
-        }
+    }
+  })
+  .then(function(res){
+    var hits = res.hits.hits;
+    if(hits.length !== 0){
+      var allTweets = [];
+      for(var i = 0, l = hits.length; i < l; i++){
+        allTweets.push(startCrawlingTweet(hits[i]));
+        // Does the tweet is in english ?
+        // var tweet = hits[i]._source;
+        // // if(textInEnglish(tweet.text)){
+        //   // Does the profil was already in database
+        //   return getProfilById(tweet.user.id)
+        //     .then(function(res){
+        //
+        //       if(!res){   // Profil is unknown
+        //         return getLastTweetOfProfil(hits[i], res);
+        //       } else if((Date.now() - res[0]._source.lastParsingDate) > (24 * 60 * 60 * dayBeforeProfilReparsing)) {
+        //         // profil was profiled more than dayBeforeProfilReparsing
+        //         return getLastTweetOfProfil(hits[i], res);
+        //       } else {
+        //         return null;
+        //       }
+        //     });
+            //
+      // }
       }
+      Promise.all(allTweets)
+      .then(function(results){
+        console.log(results)
+      })
+    }
+  })
+  .catch(function(err){
+    console.log('tag1', err);
+    // infinitMiningProfils();
+  });
+}
 
-    }).catch(function(err){
-      console.log('tag1', err);
-      // infinitMiningProfils();
-    });
-
-  }, 4500);
+var startCrawlingTweet = function startCrawlingTweet(tweet) {
+  return new Promise (function (resolve, reject){
+    return getProfilById(tweet._source.user.id)
+      .then(function(profilInDB){
+        var lastTweetId = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetId;
+        return getTwitFromProfil(tweet._source.user.screen_name, lastTweetId);
+      })
+      .catch(function(err){
+        console.log(err);
+      })
+  });
 }
 
 var infinitMiningProfils = function(){
