@@ -6,6 +6,7 @@ var html_strip = require('htmlstrip-native');
 var config = require('./config.js');
 // var regTopics = new RegExp(config.topics.join('|'), 'gi');
 var minEnglishScore = 0.7;
+var timeoutLimit = 10; // In second
 
 var strip_options = {
 	include_script : false,
@@ -16,7 +17,10 @@ var strip_options = {
 var exploreUrl = function exploreUrl(url){
   return new Promise(function(resolve, reject){
     try {
-      var r = request({url: url, timeout: 1000 * 10}, function (error, response, html) {
+      if(!url){
+        return resolve({error: 'no url'});
+      }
+      var r = request({url: url, timeout: 1000 * timeoutLimit}, function (error, response, html) {
         timerTimeout && clearTimeout(timerTimeout);
 
         if (!error && response.statusCode == 200) {
@@ -65,30 +69,33 @@ var exploreUrl = function exploreUrl(url){
               return resolve({
                 url: url,
                 true_url: true_url,
-                title: title.toString().trim(),
+                title: (title && title.toString) ? title.toString().trim() : true_url,
                 nbWord: nbWord,
                 crawled_at: Date.now()
               });
 
             } else {
-              return reject('not in english');
+              return resolve({error: 'not in english'});
             }
           } catch(error){
-            return reject(error);
+            // console.log('exploreUrl error', url)
+            return resolve({error : error});
           }
         } else {
-          return reject(error);
+          // console.log('request error', url);
+          return resolve({error : error});
         }
       });
 
       var timerTimeout = global.setTimeout(function( ) {
         r.abort();
-        return reject('timeout');
-      }, 5*1000);
+        console.log('URL timeout', url);
+        return resolve({error : 'timeout'});
+      }, timeoutLimit*1000);
 
     } catch(err){
-      console.log(err);
-      return reject(err);
+      // console.log('tag', err);
+      return resolve({error: err});
     }
   });
 }
@@ -111,4 +118,4 @@ var textInEnglish = function(text){
 
 module.exports = exploreUrl;
 
-exploreUrl('https://medium.com/free-stuff/2000-programming-resources-c2c835001216#.2e3v5d9b5');
+// exploreUrl('https://medium.com/free-stuff/2000-programming-resources-c2c835001216#.2e3v5d9b5');

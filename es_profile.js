@@ -6,6 +6,7 @@ var auth = require('./auth.js');
 var config = require('./config.js');
 var franc = require('franc');
 var getTwitFromProfil = require('./getTwitFromProfil');
+var exploreUrl = require('./exploreUrl');
 
 var client = new Twitter({
   consumer_key: auth.consumer_key_profil,
@@ -53,7 +54,7 @@ var getProfilById = function(profilId){
   });
 }
 
-var analyseTweet =function(tweets ){
+var analyseTweet = function(tweets ){
   var tweetToInsert = [];
   var nbTweetAdded = 0;   // nbTweet that are relatives to topics
 
@@ -246,12 +247,52 @@ var miningProfils = function(){
   });
 }
 
+var exploreUrlSync = function exploreUrlSync(url){
+  return new Promise (function(resolve, reject){
+    return resolve(exploreUrl(url));
+    // return resolve(url);
+  });
+}
+
 var startCrawlingTweet = function startCrawlingTweet(tweet) {
   return new Promise (function (resolve, reject){
     return getProfilById(tweet._source.user.id)
       .then(function(profilInDB){
         var lastTweetId = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetId;
         return getTwitFromProfil(tweet._source.user.screen_name, lastTweetId);
+      })
+      .then(function(links){
+        if(links && links.length){
+          // return Promise.all(links.map(exploreUrl));
+          var i = 0;
+          var allDocument = [];
+
+          var concurrency = 5;
+
+
+          var loop = function(start){
+            // console.log(start, start + concurrency);
+            var partialLinks = links.slice(start, start + concurrency);
+            return Promise.all(partialLinks.map(exploreUrlSync))
+              .then(function(docs){
+                allDocument = allDocument.concat(docs);
+                if(partialLinks.length !== 0){
+                  return loop(start+concurrency);
+                }
+              });
+          }
+
+          return loop(0)
+            .then(function(doc){
+              console.log(tweet._source.user.screen_name, allDocument[0]);
+            })
+
+
+        }
+        return null;
+      })
+      .then(function(document){
+        console.log('document', tweet._source.user.screen_name);
       })
       .catch(function(err){
         console.log(err);
