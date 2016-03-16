@@ -21,6 +21,7 @@ var urlRegExp = new RegExp('https?:(?:/{1,3})([A-z0-9./-])*', 'gi');
 var nbTweetToGetFromProfile = 2;
 var dayBeforeProfilReparsing = 2;
 var minEnglishScore = 0.7;
+var nbDayBeforeScrap = 2;
 
 var textInEnglish = function(text){
   var languages = franc.all(text);
@@ -214,8 +215,16 @@ var miningProfils = function(){
     var hits = res.hits.hits;
     if(hits.length !== 0){
       var allTweets = [];
-      for(var i = 0, l = hits.length; i < l; i++){
-        allTweets.push(startCrawlingTweet(hits[i]));
+
+      return Promise.all(hits.map(startCrawlingTweet))
+      .then(function(documents){
+        console.log('do', documents.length);
+      })
+
+      // for(var i = 0, l = hits.length; i < l; i++){
+        // allTweets.push(startCrawlingTweet(hits[i]));
+
+
         // Does the tweet is in english ?
         // var tweet = hits[i]._source;
         // // if(textInEnglish(tweet.text)){
@@ -234,11 +243,11 @@ var miningProfils = function(){
         //     });
             //
       // }
-      }
-      Promise.all(allTweets)
-      .then(function(results){
-        console.log(results)
-      })
+      // }
+      // Promise.all(allTweets)
+      // .then(function(results){
+      //   console.log(results)
+      // })
     }
   })
   .catch(function(err){
@@ -259,7 +268,12 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
     return getProfilById(tweet._source.user.id)
       .then(function(profilInDB){
         var lastTweetId = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetId;
-        return getTwitFromProfil(tweet._source.user.screen_name, lastTweetId);
+        var lastTweetDate = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetDate;
+
+        if( Math.round( (Date.now() - lastTweetDate) / (24 * 60 * 60 * 1000) ) > nbDayBeforeScrap ) {
+          return getTwitFromProfil(tweet._source.user.screen_name, lastTweetId);
+        }
+        return null;
       })
       .then(function(links){
         if(links && links.length){
@@ -279,23 +293,25 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
                 if(partialLinks.length !== 0){
                   return loop(start+concurrency);
                 }
+                return resolve(allDocument);
               });
           }
 
           return loop(0)
-            .then(function(doc){
-              console.log(tweet._source.user.screen_name, allDocument[0]);
+            .then(function(){
+              console.log(tweet._source.user.screen_name, allDocument.length);
+              /////////////////// TODO INSERT DOC / PROFILE IN DB //////////////
+              return resolve(allDocument);
             })
 
 
+        } else {
+          return resolve(null);
         }
-        return null;
-      })
-      .then(function(document){
-        console.log('document', tweet._source.user.screen_name);
+
       })
       .catch(function(err){
-        console.log(err);
+        console.log('err1', err);
       })
   });
 }

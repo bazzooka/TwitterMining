@@ -6,7 +6,7 @@ var html_strip = require('htmlstrip-native');
 var config = require('./config.js');
 // var regTopics = new RegExp(config.topics.join('|'), 'gi');
 var minEnglishScore = 0.7;
-var timeoutLimit = 10; // In second
+var timeoutLimit = 20; // In second
 
 var strip_options = {
 	include_script : false,
