@@ -4,6 +4,10 @@ var elastic = new ElasticSearch();
 
 // elastic.ping();
 
+
+
+// elastic.findDocument().then(function(res){console.log(res.hits.hits);});
+
 // elastic.findTweet().then(function(res){console.log(res.hits.hits);});
 
 // elastic.findTweetProfil().then(function(res){console.log(res);});

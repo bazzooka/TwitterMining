@@ -165,6 +165,16 @@ ElasticSearch.prototype.insertDocument = function(doc){
   });
 }
 
+ElasticSearch.prototype.findDocument = function(query){
+  return this.client.search({
+    index: tweetIndex,
+    type: 'document',
+    body: {
+      query: query
+    }
+  })
+}
+
 /** END DOCUMENT **/
 
 module.exports = ElasticSearch;

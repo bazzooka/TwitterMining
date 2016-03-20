@@ -4,6 +4,7 @@ var franc = require('franc');
 var html_strip = require('htmlstrip-native');
 
 var config = require('./config.js');
+var ElasticSearch = require('./ElasticAPI');
 // var regTopics = new RegExp(config.topics.join('|'), 'gi');
 var minEnglishScore = 0.7;
 var timeoutLimit = 20; // In second
@@ -14,14 +15,16 @@ var strip_options = {
 	compact_whitespace : true
 };
 
-var exploreUrl = function exploreUrl(url){
+var elastic = new ElasticSearch();
+
+var exploreUrl = function exploreUrl(url, twitterUserId, tweetId){
   return new Promise(function(resolve, reject){
     try {
       if(!url){
         return resolve({error: 'no url'});
       }
-      var r = request({url: url, timeout: 1000 * timeoutLimit}, function (error, response, html) {
-        timerTimeout && clearTimeout(timerTimeout);
+      var r = request({url: url, timeout: 1000 * timeoutLimit, followAllRedirects: true}, function (error, response, html) {
+        // timerTimeout && clearTimeout(timerTimeout);
 
         if (!error && response.statusCode == 200) {
           try{
@@ -58,21 +61,23 @@ var exploreUrl = function exploreUrl(url){
                   }
                 }
               });
-              // TO TEST !!
-              // console.log({
-              //   url: url,
-              //   true_url: true_url,
-              //   title: title.toString().trim(),
-              //   nbWord: nbWord,
-              //   crawled_at: Date.now()
-              // });
-              return resolve({
+
+              /////////// TODO INSERT IN DB /////////////////
+              var document = {
                 url: url,
                 true_url: true_url,
                 title: (title && title.toString) ? title.toString().trim() : true_url,
                 nbWord: nbWord,
+                twitterUserId: twitterUserId,
+                tweetId: tweetId,
+                postedAt: snowflake2Utc(tweetId),
                 crawled_at: Date.now()
-              });
+              };
+              return elastic
+                .insertDocument(document)
+                .then(function(){
+                  return resolve(document);
+                });
 
             } else {
               return resolve({error: 'not in english'});
@@ -87,11 +92,11 @@ var exploreUrl = function exploreUrl(url){
         }
       });
 
-      var timerTimeout = global.setTimeout(function( ) {
-        r.abort();
-        console.log('URL timeout', url);
-        return resolve({error : 'timeout'});
-      }, timeoutLimit*1000);
+      // var timerTimeout = global.setTimeout(function( ) {
+      //   r.abort();
+      //   console.log('URL timeout', url);
+      //   return resolve({error : 'timeout'});
+      // }, timeoutLimit*1000);
 
     } catch(err){
       // console.log('tag', err);
@@ -113,6 +118,10 @@ var textInEnglish = function(text){
     }
   }
   return false;
+}
+
+var snowflake2Utc = function snowflake2Utc(time){
+  return Math.floor( (time/4194304) + 1288834974657 );
 }
 
 

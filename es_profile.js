@@ -215,50 +215,39 @@ var miningProfils = function(){
     var hits = res.hits.hits;
     if(hits.length !== 0){
       var allTweets = [];
+      var allDocuments = [];
 
-      return Promise.all(hits.map(startCrawlingTweet))
-      .then(function(documents){
-        console.log('do', documents.length);
-      })
+      var loopCrawlingTweet = function(start){
+        var unitTweet = hits.slice(start, start + 1);
 
-      // for(var i = 0, l = hits.length; i < l; i++){
-        // allTweets.push(startCrawlingTweet(hits[i]));
+        if(unitTweet.length === 0){
+          return Promise.resolve(allDocuments);
+        }
+        return startCrawlingTweet(unitTweet[0])
+          .then(function(document){
+            allDocuments.push(document);
+            return loopCrawlingTweet(start+1);
+          })
+          .catch(function(err){
+            console.log(err);
+          });
+      }
 
-
-        // Does the tweet is in english ?
-        // var tweet = hits[i]._source;
-        // // if(textInEnglish(tweet.text)){
-        //   // Does the profil was already in database
-        //   return getProfilById(tweet.user.id)
-        //     .then(function(res){
-        //
-        //       if(!res){   // Profil is unknown
-        //         return getLastTweetOfProfil(hits[i], res);
-        //       } else if((Date.now() - res[0]._source.lastParsingDate) > (24 * 60 * 60 * dayBeforeProfilReparsing)) {
-        //         // profil was profiled more than dayBeforeProfilReparsing
-        //         return getLastTweetOfProfil(hits[i], res);
-        //       } else {
-        //         return null;
-        //       }
-        //     });
-            //
-      // }
-      // }
-      // Promise.all(allTweets)
-      // .then(function(results){
-      //   console.log(results)
-      // })
+      loopCrawlingTweet(0)
+      .then(function(allDocuments){
+        // return miningProfils();
+      });
     }
   })
   .catch(function(err){
     console.log('tag1', err);
-    // infinitMiningProfils();
+    // return miningProfils();
   });
 }
 
-var exploreUrlSync = function exploreUrlSync(url){
+var exploreUrlSync = function exploreUrlSync(url, twitterUserId, tweetId){
   return new Promise (function(resolve, reject){
-    return resolve(exploreUrl(url));
+    return resolve(exploreUrl(url, twitterUserId, tweetId));
     // return resolve(url);
   });
 }
@@ -287,21 +276,40 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
           var loop = function(start){
             // console.log(start, start + concurrency);
             var partialLinks = links.slice(start, start + concurrency);
-            return Promise.all(partialLinks.map(exploreUrlSync))
-              .then(function(docs){
-                allDocument = allDocument.concat(docs);
-                if(partialLinks.length !== 0){
-                  return loop(start+concurrency);
-                }
-                return resolve(allDocument);
-              });
+            return Promise.all(partialLinks.map(function(link){
+              return exploreUrlSync(link, tweet._source.user.id, tweet._source.id);
+            }))
+            .then(function(docs){
+              allDocument = allDocument.concat(docs);
+              if(partialLinks.length !== 0){
+                return loop(start+concurrency);
+              }
+              return Promise.resolve(allDocument);
+            });
           }
 
           return loop(0)
             .then(function(){
-              console.log(tweet._source.user.screen_name, allDocument.length);
-              /////////////////// TODO INSERT DOC / PROFILE IN DB //////////////
-              return resolve(allDocument);
+              /////////////////// TODO INSERT / UPDATE PROFILE IN DB //////////////
+              ////////// lastTweetId / lastTweetDate //////////////////////////////
+              var totalScore = 0;
+              for(var j = 0, l = allDocument.length; j < l; j++){
+                if(!allDocument[j].error && !(!!allDocument[j].nbWord) ){
+                  totalScore += allDocument[j].nbWord;
+                }
+              }
+              console.log(tweet._source.user.screen_name, allDocument.length, totalScore);
+              return elastic.insertProfil({
+                screen_name: tweet._source.user.screen_name,
+                userId: tweet._source.user.id,
+                nbDocument: allDocument.length,
+                scoreTotal: totalScore,
+                ratio: allDocument/totalScore,
+                lastTweetId:
+                lastTweetDate:
+              }).then(function(){
+                return resolve(allDocument);
+              });
             })
 
 
