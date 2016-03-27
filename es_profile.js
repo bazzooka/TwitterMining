@@ -365,7 +365,7 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
 
 
         } else if(results.oldProfil){
-          console.log('already parsed', tweet._id);
+          console.log('already parsed', tweet._id); // TODO WHY IT'S ALWAYS THE SAME ID ?
           return elastic.updateTweet(tweet._id, {profiled: true})
             .then(function(){
               return miningProfils();
