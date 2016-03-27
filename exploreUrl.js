@@ -5,6 +5,7 @@ var html_strip = require('htmlstrip-native');
 
 var config = require('./config.js');
 var ElasticSearch = require('./ElasticAPI');
+var snowflake = require('./snowflake');
 // var regTopics = new RegExp(config.topics.join('|'), 'gi');
 var minEnglishScore = 0.7;
 var timeoutLimit = 20; // In second
@@ -15,6 +16,7 @@ var strip_options = {
 	compact_whitespace : true
 };
 
+var snowflake2Utc = snowflake.snowflake2Utc;
 var elastic = new ElasticSearch();
 
 var exploreUrl = function exploreUrl(url, twitterUserId, tweetId){
@@ -118,10 +120,6 @@ var textInEnglish = function(text){
     }
   }
   return false;
-}
-
-var snowflake2Utc = function snowflake2Utc(time){
-  return Math.floor( (time/4194304) + 1288834974657 );
 }
 
 

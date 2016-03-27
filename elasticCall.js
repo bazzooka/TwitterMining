@@ -8,7 +8,35 @@ var elastic = new ElasticSearch();
 
 // elastic.findDocument().then(function(res){console.log(res.hits.hits);});
 
-// elastic.findTweet().then(function(res){console.log(res.hits.hits);});
+// elastic.findTweet({
+  // 'filtered': {
+    // 'filter': {
+      // 'bool': {
+        // 'should': [
+            // profiled is undefined
+            // {
+            //   'missing': {
+            //     'field': 'profiled'
+            //   }
+            // }
+            // ,
+            // profiled = false
+            // {
+              // 'term': {
+                  // 'profiled': false
+              // }
+            // }
+        // ]
+      // }
+    // }
+  // }
+// })
+// .then(function(res){console.log(res.hits.hits);})
+// .catch(function(err){
+  // console.log(err);
+// })
+
+elastic.findTweet().then(function(res){console.log(res.hits.hits);});
 
 // elastic.findTweetProfil().then(function(res){console.log(res);});
 

@@ -7,6 +7,7 @@ var config = require('./config.js');
 var franc = require('franc');
 var getTwitFromProfil = require('./getTwitFromProfil');
 var exploreUrl = require('./exploreUrl');
+var snowflake = require('./snowflake');
 
 var client = new Twitter({
   consumer_key: auth.consumer_key_profil,
@@ -18,6 +19,7 @@ var client = new Twitter({
 var elastic = new ElasticSearch();
 var regTopics = new RegExp(config.topics.join('|'), 'gi');
 var urlRegExp = new RegExp('https?:(?:/{1,3})([A-z0-9./-])*', 'gi');
+var snowflake2Utc = snowflake.snowflake2Utc;
 var nbTweetToGetFromProfile = 2;
 var dayBeforeProfilReparsing = 2;
 var minEnglishScore = 0.7;
@@ -38,6 +40,8 @@ var textInEnglish = function(text){
   return false;
 }
 
+// Search in database profil by twitter user id
+// Return true profil if profil is in database, else null
 var getProfilById = function(profilId){
   return new Promise(function(resolve, reject){
     elastic.findProfil({
@@ -188,7 +192,7 @@ var getLastTweetOfProfil = function(tweetParent, profilInDB){
 
 var miningProfils = function(){
   // Find tweet that was not profiled
-  elastic.findTweet({
+  return elastic.findTweet({
     'filtered': {
       'filter': {
         'bool': {
@@ -212,19 +216,24 @@ var miningProfils = function(){
     }
   })
   .then(function(res){
-    var hits = res.hits.hits;
+    var hits = res.hits.hits;   // all twits
     if(hits.length !== 0){
       var allTweets = [];
       var allDocuments = [];
 
+      // Loop throught twits array
       var loopCrawlingTweet = function(start){
         var unitTweet = hits.slice(start, start + 1);
 
+        // no more twits
         if(unitTweet.length === 0){
           return Promise.resolve(allDocuments);
         }
+
+        // Crawl twit
         return startCrawlingTweet(unitTweet[0])
           .then(function(document){
+            // add document to document array
             allDocuments.push(document);
             return loopCrawlingTweet(start+1);
           })
@@ -233,10 +242,17 @@ var miningProfils = function(){
           });
       }
 
-      loopCrawlingTweet(0)
+      loopCrawlingTweet(0)  // start loop all twits
       .then(function(allDocuments){
         // return miningProfils();
       });
+    } else {
+      console.log('timeout');
+      return (
+        setTimeout(function(){
+            return miningProfils();
+        }, 5000)
+      )
     }
   })
   .catch(function(err){
@@ -252,21 +268,27 @@ var exploreUrlSync = function exploreUrlSync(url, twitterUserId, tweetId){
   });
 }
 
+// Get twits from user tweet
 var startCrawlingTweet = function startCrawlingTweet(tweet) {
   return new Promise (function (resolve, reject){
-    return getProfilById(tweet._source.user.id)
+    var profileOld = null;
+    return getProfilById(tweet._source.user.id)   // Get profil from tweet
       .then(function(profilInDB){
+        profileOld = profilInDB;
+        // Construct twitter request with profile informations
         var lastTweetId = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetId;
         var lastTweetDate = profilInDB && profilInDB[0]._source && profilInDB[0]._source.lastTweetDate;
 
-        if( Math.round( (Date.now() - lastTweetDate) / (24 * 60 * 60 * 1000) ) > nbDayBeforeScrap ) {
+        // Check if the last twit is more than nbDayBeforeScrap. Avoid to crawl a account to frequently
+        if(!profilInDB ||  Math.round( (Date.now() - lastTweetDate) / (24 * 60 * 60 * 1000) ) > nbDayBeforeScrap ) {
           return getTwitFromProfil(tweet._source.user.screen_name, lastTweetId);
         }
-        return null;
+        return {oldProfil: profileOld};
       })
-      .then(function(links){
-        if(links && links.length){
-          // return Promise.all(links.map(exploreUrl));
+      .then(function(results){
+        if(results.links){
+          var links = results.links;
+          var twitIds = results.twitIds;
           var i = 0;
           var allDocument = [];
 
@@ -284,37 +306,70 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
               if(partialLinks.length !== 0){
                 return loop(start+concurrency);
               }
-              return Promise.resolve(allDocument);
+              return allDocument;
             });
           }
 
           return loop(0)
-            .then(function(){
+            .then(function(docs){
               /////////////////// TODO INSERT / UPDATE PROFILE IN DB //////////////
               ////////// lastTweetId / lastTweetDate //////////////////////////////
               var totalScore = 0;
-              for(var j = 0, l = allDocument.length; j < l; j++){
-                if(!allDocument[j].error && !(!!allDocument[j].nbWord) ){
-                  totalScore += allDocument[j].nbWord;
+
+              for(var j = 0, l = docs.length; j < l; j++){
+                if(!docs[j].error && !!docs[j].nbWord ){
+                  totalScore += docs[j].nbWord;
                 }
               }
-              console.log(tweet._source.user.screen_name, allDocument.length, totalScore);
-              return elastic.insertProfil({
-                screen_name: tweet._source.user.screen_name,
-                userId: tweet._source.user.id,
-                nbDocument: allDocument.length,
-                scoreTotal: totalScore,
-                ratio: allDocument/totalScore,
-                lastTweetId:
-                lastTweetDate:
-              }).then(function(){
-                return resolve(allDocument);
-              });
+
+              if(profileOld){
+                console.log('Update profile in database');
+                var scriptUpdate = '';
+                scriptUpdate += 'ctx._source.lastTweetId = lastTweetId; ';
+                scriptUpdate += 'cts._source.lastTweetDate = lastTweetDate; ';
+                scriptUpdate += 'ctx._source.nbDocument += nbDocument; ';
+                scriptUpdate += 'ctx._source.totalTweetRelated += nbTweetAdded; ';
+                scriptUpdate += 'ctx._source.ratio += ratio; ';
+                return elastic.updateProfilCounter(
+                  profileOld.id,
+                  {
+                    // update counters
+                    script: scriptUpdate,
+                    params: {
+                      nbDocument: docs.length,
+                      lastTweetId: twitIds[0],
+                      lastTweetDate: snowflake2Utc(twitIds[0]),
+                      ratio: (totalScore + profileOld._source.scoreTotal) / (docs.length + profileOld._source.nbDocument)
+                    }
+                  }
+                ).then(function(){
+                  return elastic.updateTweet(tweet._id, {profiled: true})
+                });
+              } else {
+                console.log('Insert profile in database', tweet._source.user.screen_name);
+                return elastic.insertProfil({
+                  screen_name: tweet._source.user.screen_name,
+                  userId: tweet._source.user.id,
+                  nbDocument: docs.length,
+                  scoreTotal: totalScore,
+                  ratio: totalScore/docs.length,
+                  lastTweetId: twitIds[0],
+                  lastTweetDate: snowflake2Utc(twitIds[0])
+                })
+                .then(function(){
+                  return elastic.updateTweet(tweet._id, {profiled: true})
+                });
+              }
+              // return resolve(allDocument);
             })
 
 
-        } else {
-          return resolve(null);
+        } else if(results.oldProfil){
+          console.log('already parsed', tweet._id);
+          return elastic.updateTweet(tweet._id, {profiled: true})
+            .then(function(){
+              return miningProfils();
+            })
         }
 
       })
@@ -326,6 +381,7 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
 
 var infinitMiningProfils = function(){
   try{
+    // Mining profils
     miningProfils();
   } catch(error){
     miningProfils();

@@ -157,7 +157,6 @@ ElasticSearch.prototype.findTweetProfil = function(query){
 
 /** START DOCUMENT **/
 ElasticSearch.prototype.insertDocument = function(doc){
-  console.log('create document');
   return this.client.index({
     index: tweetIndex,
     type: 'document',
