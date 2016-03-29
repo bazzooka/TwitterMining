@@ -78,50 +78,46 @@ var elastic = new ElasticSearch();
 
 
 
-//
-// for(var i = 0, l = res.hits.hits.length; i < l ; i++){
-//     allProfiles.push(res.hits.hits[i]._source.screen_name);
-//     // console.log(res.hits.hits[i]._source.screen_name)
+// var findProfileRecursive = function() {
+//   var findAllProfiles = function(size, from){
+//     return elastic.findProfil({
+//       "query" : {
+//         "match_all" : {}
+//       },
+//       "size": size,
+//       "from": from
+//     })
 //   }
-//   if(all)
-// });
+//
+//   elastic.client.count({
+//     index: 'tweet_test',
+//     type: 'profil'
+//
+//   }, function (err, response) {
+//     var maxResponse = response.count;
+//     var allProfiles = [];
+//
+//     var searchForIt = function(from){
+//       findAllProfiles(5, from)
+//       .then(function(response){
+//         allProfiles = allProfiles.concat(response.hits.hits);
+//         if(allProfiles.length < maxResponse){
+//           return searchForIt(from+5);
+//         } else {
+//           var allScreenName = [];
+//           for(var i = 0; i < allProfiles.length; i++){
+//             allScreenName.push(allProfiles[i]._source.screen_name);
+//           }
+//           console.log(allScreenName.sort());
+//         }
+//       })
+//     }
+//     searchForIt(0);
+//
+//   });
+// }
 
-var findAllProfiles = function(size, from){
-  return elastic.findProfil({
-    "query" : {
-      "match_all" : {}
-    },
-    "size": size,
-    "from": from
-  })
-}
 
-elastic.client.count({
-  index: 'tweet_test',
-  type: 'profil'
-
-}, function (err, response) {
-  var maxResponse = response.count;
-  var allProfiles = [];
-
-  var searchForIt = function(from){
-    findAllProfiles(5, from)
-    .then(function(response){
-      allProfiles = allProfiles.concat(response.hits.hits);
-      if(allProfiles.length < maxResponse){
-        return searchForIt(from+5);
-      } else {
-        var allScreenName = [];
-        for(var i = 0; i < allProfiles.length; i++){
-          allScreenName.push(allProfiles[i]._source.screen_name);
-        }
-        console.log(allScreenName.sort());
-      }
-    })
-  }
-  searchForIt(0);
-
-});
 
 
 

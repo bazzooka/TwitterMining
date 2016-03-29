@@ -180,7 +180,6 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
         return {oldProfil: profileOld};
       })
       .then(function(results){
-        console.log('profileOLD', profileOld);
         if(results.links){
           var links = results.links;
           var twitIds = results.twitIds;
