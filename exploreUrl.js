@@ -25,7 +25,7 @@ var exploreUrl = function exploreUrl(url, twitterUserId, tweetId){
       if(!url){
         return resolve({error: 'no url'});
       }
-      var r = request({url: url, timeout: 1000 * timeoutLimit, followAllRedirects: true}, function (error, response, html) {
+      var r = request({url: url, jar: true, timeout: 1000 * timeoutLimit, followAllRedirects: true}, function (error, response, html) {
         // timerTimeout && clearTimeout(timerTimeout);
 
         if (!error && response.statusCode == 200) {

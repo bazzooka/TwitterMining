@@ -34,7 +34,7 @@ var getTwitFromProfil = function getTwitFromProfil(username, maxId){
         if(maxTwitToCrawl >= nbTwitCrawled && !results.findedMaxId){
           return recurGetTwitts(username, nextPage, maxId);
         } else {
-          console.log(links.length, twitIds.length, 'OK3')
+          // console.log(links.length, twitIds.length, 'OK3')
           return {links: links, twitIds: twitIds};
         }
       })
@@ -56,7 +56,7 @@ var getTwitFromProfil = function getTwitFromProfil(username, maxId){
 var requestTweets = function requestTweets(username, nextPageUrl, maxId){
   return new Promise(function(resolve, reject){
     var url = nextPageUrl ? (baseUrl + nextPageUrl) : (baseUrl + username);
-    var r = request({url: url, header: header, timeout: 1000 * 10}, function (error, response, html) {
+    var r = request({url: url, jar: true, header: header, timeout: 1000 * 10}, function (error, response, html) {
 
       var $ = cheerio.load(html)
       var allTweets = $('table.tweet');

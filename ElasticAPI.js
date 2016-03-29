@@ -56,6 +56,20 @@ ElasticSearch.prototype.findTweet = function(query){
   })
 }
 
+ElasticSearch.prototype.findTweetById = function(id){
+  return this.client.search({
+    index: tweetIndex,
+    type: 'tweet',
+    body: {
+      query: {
+        ids:{
+          values: [ id ]
+        }
+      }
+    }
+  })
+}
+
 ElasticSearch.prototype.existTweet = function(tweetId){
   return this.client.exists({
     index: tweetIndex,
@@ -83,7 +97,7 @@ ElasticSearch.prototype.deleteTweet = function(tweetId){
 
 ElasticSearch.prototype.insertProfil = function(profil){
   console.log('create profil');
-  return this.client.index({
+  return this.client.create({
     index: tweetIndex,
     type: 'profil',
     body: profil
@@ -123,7 +137,7 @@ ElasticSearch.prototype.findProfil = function(query){
   return this.client.search({
     index: tweetIndex,
     type: 'profil',
-    query
+    body: query
   })
 }
 

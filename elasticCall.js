@@ -9,36 +9,167 @@ var elastic = new ElasticSearch();
 // elastic.findDocument().then(function(res){console.log(res.hits.hits);});
 
 // elastic.findTweet({
-  // 'filtered': {
-    // 'filter': {
-      // 'bool': {
-        // 'should': [
-            // profiled is undefined
-            // {
-            //   'missing': {
-            //     'field': 'profiled'
-            //   }
-            // }
-            // ,
-            // profiled = false
-            // {
-              // 'term': {
-                  // 'profiled': false
-              // }
-            // }
-        // ]
-      // }
-    // }
-  // }
+//   'filtered': {
+//     'filter': {
+//       'bool': {
+//         'should': [
+//             // profiled is undefined
+//             {
+//               'missing': {
+//                 'field': 'profiled'
+//               }
+//             }
+//             ,
+//             // profiled = false
+//             {
+//               'term': {
+//                   'profiled': false
+//               }
+//             },
+//             {
+//               'missing': {
+//                 'field': 'is_analyzing'
+//               }
+//             },
+//             // {
+//             //   'term': {
+//             //     'is_analyzing': false
+//             //   }
+//             // }
+//         ]
+//       }
+//     }
+//   }
 // })
 // .then(function(res){console.log(res.hits.hits);})
 // .catch(function(err){
-  // console.log(err);
+//   console.log(err);
 // })
 
-elastic.findTweet().then(function(res){console.log(res.hits.hits);});
+// elastic.findTweet().then(function(res){
+//   for(var i = 0, l = res.hits.hits.length; i < l ; i++){
+//     console.log(res.hits.hits[i]._source.user.screen_name)
+//   }
+// });
 
 // elastic.findTweetProfil().then(function(res){console.log(res);});
+
+
+// elastic.findTweetById('AVPCvN2TdjCqbYXiLsG2')
+// .then(function(res){console.log(res.hits.hits);});
+
+// elastic.findProfil({
+//   query: {
+//     filtered: {
+//       // query: {
+//       //   "match_all": {}
+//       // },
+//       filter: {
+//         term: { 'userId': 225758448 }
+//       }
+//     }
+//   }
+// })
+// .then(function(res){
+//   for(var i = 0, l = res.hits.hits.length; i < l ; i++){
+//     console.log(res.hits.hits[i]._source.screen_name)
+//   }
+// })
+
+
+
+//
+// for(var i = 0, l = res.hits.hits.length; i < l ; i++){
+//     allProfiles.push(res.hits.hits[i]._source.screen_name);
+//     // console.log(res.hits.hits[i]._source.screen_name)
+//   }
+//   if(all)
+// });
+
+var findAllProfiles = function(size, from){
+  return elastic.findProfil({
+    "query" : {
+      "match_all" : {}
+    },
+    "size": size,
+    "from": from
+  })
+}
+
+elastic.client.count({
+  index: 'tweet_test',
+  type: 'profil'
+
+}, function (err, response) {
+  var maxResponse = response.count;
+  var allProfiles = [];
+
+  var searchForIt = function(from){
+    findAllProfiles(5, from)
+    .then(function(response){
+      allProfiles = allProfiles.concat(response.hits.hits);
+      if(allProfiles.length < maxResponse){
+        return searchForIt(from+5);
+      } else {
+        var allScreenName = [];
+        for(var i = 0; i < allProfiles.length; i++){
+          allScreenName.push(allProfiles[i]._source.screen_name);
+        }
+        console.log(allScreenName.sort());
+      }
+    })
+  }
+  searchForIt(0);
+
+});
+
+
+
+
+// elastic.client.search({
+//   index: 'tweet_test',
+//   type: 'profil',
+//   body: {
+//       query: {
+//         filtered: {
+//           // query: {
+//           //   "match_all": {}
+//           // },
+//           filter: {
+//             term: { 'userId': '22656287' }
+//           }
+//         }
+//       }
+//     }
+//
+// }).then(function(res){
+//   console.log(res)
+//   for(var i = 0, l = res.hits.hits.length; i < l ; i++){
+//     console.log(res.hits.hits[i])
+//   }
+// })
+// .catch(function(err){
+//   console.log(err);
+// })
+
+
+// elastic.findProfil({
+//   filtered: {
+//     filter: {
+//       term : {
+//         userId: 'ABC'
+//       }
+//     }
+//
+//   }
+// }).then(function(res){
+//   console.log(res.hits.hits);
+// })
+// .catch(function(err){
+//   console.log(err);
+// })
+
+
 
 // elastic.deleteTweet('AVMuBqxmLSNV_9wOg9OC')
 // .then(function(res){
@@ -48,16 +179,22 @@ elastic.findTweet().then(function(res){console.log(res.hits.hits);});
 // })
 
 
-
+// var scriptUpdate = '';
+// scriptUpdate += 'ctx._source.lastTweetId = lastTweetId; ';
+// scriptUpdate += 'ctx._source.lastTweetDate = lastTweetDate; ';
+// scriptUpdate += 'ctx._source.nbDocument += nbDocument; ';
+// // scriptUpdate += 'ctx._source.totalTweetRelated += nbTweetAdded; ';
+// scriptUpdate += 'ctx._source.ratio += ratio; ';
 // elastic.updateProfilCounter(
-//   'AVNG6W9RdjCqbYXiLoho',
+//   'AVO1hPyCdjCqbYXiLr62',
 //   {
 //     // update counters
-//     script: 'ctx._source.lastTweetId = lastTweetId; ctx._source.totalTweet += totalProceceedTweet; ctx._source.totalTweetRelated += nbTweetAdded',
+//     script: scriptUpdate,
 //     params: {
-//       totalProceceedTweet: 123,
-//       nbTweetAdded: 321,
-//       lastTweetId: 456
+//       lastTweetId: '714438699635707904',
+//       lastTweetDate: 1459170434279,
+//       nbDocument: 4,
+//       ratio: 7.380952380952381
 //     }
 //   }
 // )
