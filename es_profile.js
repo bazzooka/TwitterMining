@@ -8,6 +8,7 @@ var franc = require('franc');
 var getTwitFromProfil = require('./getTwitFromProfil');
 var exploreUrl = require('./exploreUrl');
 var snowflake = require('./snowflake');
+var Queue = require('./queue');
 
 var client = new Twitter({
   consumer_key: auth.consumer_key_profil,
@@ -22,6 +23,8 @@ var urlRegExp = new RegExp('https?:(?:/{1,3})([A-z0-9./-])*', 'gi');
 var snowflake2Utc = snowflake.snowflake2Utc;
 var minEnglishScore = 0.7;
 var nbDayBeforeScrap = 2;
+var nbUserBeforeRecrawl = 5;
+var lastUsersCrawled = new Queue(nbUserBeforeRecrawl);
 
 var textInEnglish = function(text){
   var languages = franc.all(text);
@@ -131,14 +134,38 @@ var miningProfils = function(){
           });
       }
 
+      // Check that user of the twit is not in the last crawled user
+      // Hack to let elasticsearch do near real time (insert and index)
+      var selectedTwit = hits[0];
+      for(var i = 0, l = hits.length; i < l; i++){
+        // console.log('selectedTwits', i, hits[i]._source.user.screen_name);
+        if( lastUsersCrawled.list.indexOf(hits[i]._source.user.id) < 0 ){
+          lastUsersCrawled.enqueue(hits[i]._source.user.id);
+          selectedTwit = hits[i];
+          break;
+        }
+      }
+      var allDocuments = [];
       elastic
-        .updateTweet(hits[0]._id, {was_analyzed: true})
+        .updateTweet(selectedTwit._id, {was_analyzed: true})
         .then(function(){
-          loopCrawlingTweet(0)  // start loop all twits
+          return startCrawlingTweet(selectedTwit);
         })
-        .then(function(allDocuments){
-          // return miningProfils();
+        // then(function(res){
+        //   console.log('aaz', res);
+        // })
+        // .then(function(document){
+        //   // add document to document array
+        //   allDocuments.push(document);
+        //   return loopCrawlingTweet(start+1);
+        // })
+        // .then(function(allDocuments){
+        //   // return miningProfils();
+        // })
+        .catch(function(err){
+          console.log('tagi', err);
         });
+
     } else {
       console.log('timeout');
       return (
@@ -206,8 +233,6 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
 
           return loop(0)
             .then(function(docs){
-              /////////////////// TODO INSERT / UPDATE PROFILE IN DB //////////////
-              ////////// lastTweetId / lastTweetDate //////////////////////////////
               var totalScore = 0;
 
               for(var j = 0, l = docs.length; j < l; j++){

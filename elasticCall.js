@@ -8,43 +8,46 @@ var elastic = new ElasticSearch();
 
 // elastic.findDocument().then(function(res){console.log(res.hits.hits);});
 
-// elastic.findTweet({
-//   'filtered': {
-//     'filter': {
-//       'bool': {
-//         'should': [
-//             // profiled is undefined
-//             {
-//               'missing': {
-//                 'field': 'profiled'
-//               }
-//             }
-//             ,
-//             // profiled = false
-//             {
-//               'term': {
-//                   'profiled': false
-//               }
-//             },
-//             {
-//               'missing': {
-//                 'field': 'is_analyzing'
-//               }
-//             },
-//             // {
-//             //   'term': {
-//             //     'is_analyzing': false
-//             //   }
-//             // }
-//         ]
-//       }
-//     }
-//   }
-// })
-// .then(function(res){console.log(res.hits.hits);})
-// .catch(function(err){
-//   console.log(err);
-// })
+elastic.findTweet({
+
+  'query': {
+    'filtered': {
+      'filter': {
+        'bool': {
+          'should': [
+              // profiled is undefined
+              {
+                'missing': {
+                  'field': 'profiled'
+                }
+              }
+              ,
+              // profiled = false
+              {
+                'term': {
+                    'profiled': false
+                }
+              },
+              {
+                'missing': {
+                  'field': 'is_analyzing'
+                }
+              },
+              // {
+              //   'term': {
+              //     'is_analyzing': false
+              //   }
+              // }
+          ]
+        }
+      }
+    }
+  }
+})
+.then(function(res){console.log(res);})
+.catch(function(err){
+  console.log(err);
+})
 
 // elastic.findTweet().then(function(res){
 //   for(var i = 0, l = res.hits.hits.length; i < l ; i++){

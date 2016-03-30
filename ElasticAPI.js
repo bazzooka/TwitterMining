@@ -1,6 +1,6 @@
 var elasticsearch = require('elasticsearch');
 
-var tweetIndex = 'tweet_test';
+var tweetIndex = 'twitter';
 
 /** START TWEET API **/
 
@@ -27,7 +27,7 @@ ElasticSearch.prototype.ping = function(){
 }
 
 ElasticSearch.prototype.insertTweet = function(tweet){
-  return this.client.index({
+  return this.client.create({
     index: tweetIndex,
     type: 'tweet',
     body: tweet
@@ -153,7 +153,7 @@ ElasticSearch.prototype.findProfilById = function(profilId){
 
 /** START TWEET_PROFIL **/
 ElasticSearch.prototype.insertTweetProfil = function(newTweetProfil){
-  return this.client.index({
+  return this.client.create({
     index: tweetIndex,
     type: 'tweetProfil',
     body: newTweetProfil
@@ -171,7 +171,7 @@ ElasticSearch.prototype.findTweetProfil = function(query){
 
 /** START DOCUMENT **/
 ElasticSearch.prototype.insertDocument = function(doc){
-  return this.client.index({
+  return this.client.create({
     index: tweetIndex,
     type: 'document',
     body: doc
