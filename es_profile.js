@@ -176,7 +176,8 @@ var miningProfils = function(){
     }
   })
   .catch(function(err){
-    console.log('tag1', err);
+    console.error('tag1', err);
+    process.exit();
     // return miningProfils();
   });
 }
