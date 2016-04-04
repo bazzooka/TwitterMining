@@ -25,6 +25,7 @@
     "twitter": "^1.2.5"
   },
   "devDependencies": {
+    "eslint-config-airbnb": "^6.2.0",
     "pm2-logrotate": "^1.3.1"
   }
 }
