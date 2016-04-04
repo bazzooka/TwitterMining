@@ -1,0 +1,176 @@
+{
+  "response": {
+    "took": 9,
+    "timed_out": false,
+    "_shards": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0
+    },
+    "hits": {
+      "total": 39037,
+      "max_score": null,
+      "hits": [{
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPjY7zXdjCqbYXiMSHX",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/aQ7RV1JY7A",
+          "true_url": "http://jobs-school.com/US/jobs/l-/q-Front+End+Software+Engineer+JavaScript+HTML+CSS+Angular+Back/?utm_medium=twitter&utm_source=twitterfeed",
+          "title": "Front End Software Engineer JavaScript HTML CSS Angular Back Jobs in Deutschland, Front End Software Engineer JavaScript HTML CSS Angular Back Jobs | jobs-school.com",
+          "nbWord": 2120,
+          "twitterUserId": "2911516967",
+          "tweetId": "715378697755295745",
+          "postedAt": 1459394547295,
+          "crawled_at": 1459808877223
+        },
+        "sort": [2120]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMXw8SdjCqbYXiL2oV",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/Qfp1VdvYnB",
+          "true_url": "https://leanpub.com/understandinges6/read",
+          "title": "Read Understanding ECMAScript 6 | Leanpub",
+          "nbWord": 587,
+          "twitterUserId": "3166538057",
+          "tweetId": "715210534400999425",
+          "postedAt": 1459354454027,
+          "crawled_at": 1459422695147
+        },
+        "sort": [587]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMb5dGdjCqbYXiL3Br",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/sSXyQZ3SsR",
+          "true_url": "https://github.com/nodejs/node-gyp/issues/629",
+          "title": "Windows users are not happy. · Issue #629 · nodejs/node-gyp · GitHub",
+          "nbWord": 288,
+          "twitterUserId": "150664007",
+          "tweetId": "715214840764051456",
+          "postedAt": 1459355480744,
+          "crawled_at": 1459423778627
+        },
+        "sort": [288]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMsGPXdjCqbYXiL4zn",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/RhvUqY85ok",
+          "true_url": "https://www.udemy.com/javascript-tutorial/?pmtag=ALMAGEST13&siteID=lzAk459zR_w-kI.1tlwjk3tlbz_mEZ_now&LSNPUBID=lzAk459zR/w",
+          "title": "Programming for Entrepreneurs - JavaScript | Udemy",
+          "nbWord": 280,
+          "twitterUserId": "2413007640",
+          "tweetId": "715244545030512640",
+          "postedAt": 1459362562793,
+          "crawled_at": 1459428025300
+        },
+        "sort": [280]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMsI5RdjCqbYXiL40A",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/FUIfSSpOmC",
+          "true_url": "https://news.ycombinator.com/item?id=11348798",
+          "title": "NPM and Left-Pad: Have We Forgotten How to Program? | Hacker News",
+          "nbWord": 232,
+          "twitterUserId": "2598080348",
+          "tweetId": "715244688836599808",
+          "postedAt": 1459362597079,
+          "crawled_at": 1459428036093
+        },
+        "sort": [232]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMo-wedjCqbYXiL4kv",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/e3Rc463mWa",
+          "true_url": "https://hashnode.com/ama/with-webpack-team-cilqks5re00038g53qqgpvqza#cimdpi8lt01q6tr53acs30j2j",
+          "title": "AMA with webpack Team - Hashnode",
+          "nbWord": 162,
+          "twitterUserId": "3957817872",
+          "tweetId": "715239567591215104",
+          "postedAt": 1459361376079,
+          "crawled_at": 1459427207960
+        },
+        "sort": [162]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMo_jCdjCqbYXiL4kz",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/jQS2JONzLg",
+          "true_url": "https://hashnode.com/ama/with-webpack-team-cilqks5re00038g53qqgpvqza",
+          "title": "AMA with webpack Team - Hashnode",
+          "nbWord": 162,
+          "twitterUserId": "3957817872",
+          "tweetId": "715239567591215104",
+          "postedAt": 1459361376079,
+          "crawled_at": 1459427211451
+        },
+        "sort": [162]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPMwUa3djCqbYXiL5OH",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/d9ISeQxANd",
+          "true_url": "https://hashnode.com/ama/with-webpack-team-cilqks5re00038g53qqgpvqza",
+          "title": "AMA with webpack Team - Hashnode",
+          "nbWord": 162,
+          "twitterUserId": "154786672",
+          "tweetId": "715253879416422402",
+          "postedAt": 1459364788284,
+          "crawled_at": 1459429131957
+        },
+        "sort": [162]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPM_N_HdjCqbYXiL6zq",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/Und065l5y1",
+          "true_url": "https://hashnode.com/ama/with-webpack-team-cilqks5re00038g53qqgpvqza",
+          "title": "AMA with webpack Team - Hashnode",
+          "nbWord": 162,
+          "twitterUserId": "14082112",
+          "tweetId": "715289108914962432",
+          "postedAt": 1459373187651,
+          "crawled_at": 1459433037763
+        },
+        "sort": [162]
+      }, {
+        "_index": "twitter",
+        "_type": "document",
+        "_id": "AVPNDb5-djCqbYXiL7RA",
+        "_score": null,
+        "_source": {
+          "url": "https://t.co/Und065l5y1",
+          "true_url": "https://hashnode.com/ama/with-webpack-team-cilqks5re00038g53qqgpvqza",
+          "title": "AMA with webpack Team - Hashnode",
+          "nbWord": 162,
+          "twitterUserId": "14193080",
+          "tweetId": "715295311179026432",
+          "postedAt": 1459374666386,
+          "crawled_at": 1459434143355
+        },
+        "sort": [162]
+      }]
+    }
+  }
+}

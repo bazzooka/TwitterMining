@@ -1,0 +1,165 @@
+"response": {
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "failed": 0
+  },
+  "hits": {
+    "total": 2379,
+    "max_score": null,
+    "hits": [{
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMCu3NdjCqbYXiL0Te",
+      "_score": null,
+      "_source": {
+        "screen_name": "DkaliRam",
+        "userId": "983245148",
+        "nbDocument": 40,
+        "scoreTotal": 2284,
+        "ratio": 115.25,
+        "lastTweetId": "717095115563511808",
+        "lastTweetDate": 1459803773190
+      },
+      "sort": [115.25]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMpCyUdjCqbYXiL4lI",
+      "_score": null,
+      "_source": {
+        "screen_name": "Hashnoder",
+        "userId": "3957817872",
+        "nbDocument": 26,
+        "scoreTotal": 1387,
+        "ratio": 53.34615384615385,
+        "lastTweetId": "715437171105275904",
+        "lastTweetDate": 1459408488428
+      },
+      "sort": [53.34615384615385]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMb5s5djCqbYXiL3Bt",
+      "_score": null,
+      "_source": {
+        "screen_name": "thealphanerd",
+        "userId": "150664007",
+        "nbDocument": 6,
+        "scoreTotal": 297,
+        "ratio": 49.5,
+        "lastTweetId": "715451257364697088",
+        "lastTweetDate": 1459411846854
+      },
+      "sort": [49.5]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMXyHhdjCqbYXiL2oi",
+      "_score": null,
+      "_source": {
+        "screen_name": "ATL_AngularJS",
+        "userId": "3166538057",
+        "nbDocument": 21,
+        "scoreTotal": 839,
+        "ratio": 39.95238095238095,
+        "lastTweetId": "715293889121402885",
+        "lastTweetDate": 1459374327341
+      },
+      "sort": [39.95238095238095]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPM1xeedjCqbYXiL5wx",
+      "_score": null,
+      "_source": {
+        "screen_name": "bobrinhacursos",
+        "userId": "41537548",
+        "nbDocument": 15,
+        "scoreTotal": 561,
+        "ratio": 37.4,
+        "lastTweetId": "715265977081077761",
+        "lastTweetDate": 1459367672592
+      },
+      "sort": [37.4]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMsGmzdjCqbYXiL4zs",
+      "_score": null,
+      "_source": {
+        "screen_name": "YLeeBuu",
+        "userId": "2413007640",
+        "nbDocument": 9,
+        "scoreTotal": 309,
+        "ratio": 34.333333333333336,
+        "lastTweetId": "712350751947956224",
+        "lastTweetDate": 1458672628758
+      },
+      "sort": [34.333333333333336]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMy5KcdjCqbYXiL5hJ",
+      "_score": null,
+      "_source": {
+        "screen_name": "_seebaer",
+        "userId": "872234221",
+        "nbDocument": 13,
+        "scoreTotal": 414,
+        "ratio": 31.846153846153847,
+        "lastTweetId": "715479167433777154",
+        "lastTweetDate": 1459418501133
+      },
+      "sort": [31.846153846153847]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPMPKVDdjCqbYXiL1pf",
+      "_score": null,
+      "_source": {
+        "screen_name": "javascriptQuote",
+        "userId": "631204567",
+        "nbDocument": 5,
+        "scoreTotal": 139,
+        "ratio": 27.8,
+        "lastTweetId": "715479677100359680",
+        "lastTweetDate": 1459418622647
+      },
+      "sort": [27.8]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPNHViPdjCqbYXiL7rx",
+      "_score": null,
+      "_source": {
+        "screen_name": "mattparrish",
+        "userId": "29505199",
+        "nbDocument": 6,
+        "scoreTotal": 164,
+        "ratio": 27.333333333333332,
+        "lastTweetId": "715288770753343488",
+        "lastTweetDate": 1459373107027
+      },
+      "sort": [27.333333333333332]
+    }, {
+      "_index": "twitter",
+      "_type": "profil",
+      "_id": "AVPNDckDdjCqbYXiL7RF",
+      "_score": null,
+      "_source": {
+        "screen_name": "ryanashcraft",
+        "userId": "14193080",
+        "nbDocument": 7,
+        "scoreTotal": 163,
+        "ratio": 23.285714285714285,
+        "lastTweetId": "715340780299100161",
+        "lastTweetDate": 1459385507069
+      },
+      "sort": [23.285714285714285]
+    }]
+  }
+}
+}
