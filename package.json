@@ -17,6 +17,7 @@
     "cheerio": "^0.20.0",
     "elasticsearch": "^10.1.3",
     "express": "^4.13.4",
+    "express-json": "^1.0.0",
     "franc": "^1.1.2",
     "history": "^2.0.1",
     "htmlstrip-native": "^0.1.3",

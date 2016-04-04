@@ -165,7 +165,7 @@ ElasticSearch.prototype.findTweetProfil = function(query){
     index: tweetIndex,
     type: 'tweetProfil',
     query
-  })
+  });
 }
 /** END TWEET_PROFIL **/
 
