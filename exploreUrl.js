@@ -19,7 +19,7 @@ var strip_options = {
 var snowflake2Utc = snowflake.snowflake2Utc;
 var elastic = new ElasticSearch();
 
-var exploreUrl = function exploreUrl(url, twitterUserId, tweetId){
+var exploreUrl = function exploreUrl(url, twit){
   return new Promise(function(resolve, reject){
     try {
       if(!url){
@@ -70,8 +70,10 @@ var exploreUrl = function exploreUrl(url, twitterUserId, tweetId){
                 true_url: true_url,
                 title: (title && title.toString) ? title.toString().trim() : true_url,
                 nbWord: nbWord,
-                twitterUserId: twitterUserId,
-                tweetId: tweetId,
+                twitterUserId: twit.user.id,
+                twitterScreenName: twit.user.screen_name,
+                twitText: twit.text,
+                tweetId: twit.id,
                 postedAt: snowflake2Utc(tweetId),
                 crawled_at: Date.now()
               };

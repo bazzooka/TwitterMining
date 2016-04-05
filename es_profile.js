@@ -182,9 +182,9 @@ var miningProfils = function(){
   });
 }
 
-var exploreUrlSync = function exploreUrlSync(url, twitterUserId, tweetId){
+var exploreUrlSync = function exploreUrlSync(url, twit){
   return new Promise (function(resolve, reject){
-    return resolve(exploreUrl(url, twitterUserId, tweetId));
+    return resolve(exploreUrl(url, twit));
     // return resolve(url);
   });
 }
@@ -221,7 +221,7 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
             // console.log(start, start + concurrency);
             var partialLinks = links.slice(start, start + concurrency);
             return Promise.all(partialLinks.map(function(link){
-              return exploreUrlSync(link, tweet._source.user.id, tweet._source.id);
+              return exploreUrlSync(link, tweet._source);
             }))
             .then(function(docs){
               allDocument = allDocument.concat(docs);
