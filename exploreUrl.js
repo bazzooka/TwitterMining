@@ -74,9 +74,10 @@ var exploreUrl = function exploreUrl(url, twit){
                 twitterScreenName: twit.user.screen_name,
                 twitText: twit.text,
                 tweetId: twit.id,
-                postedAt: snowflake2Utc(tweetId),
+                postedAt: snowflake2Utc(twit.id),
                 crawled_at: Date.now()
               };
+              
               return elastic
                 .insertDocument(document)
                 .then(function(){
@@ -87,7 +88,7 @@ var exploreUrl = function exploreUrl(url, twit){
               return resolve({error: 'not in english'});
             }
           } catch(error){
-            // console.log('exploreUrl error', url)
+            console.log('exploreUrl error', error)
             return resolve({error : error});
           }
         } else {
