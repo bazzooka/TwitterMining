@@ -25,6 +25,7 @@ var exploreUrl = function exploreUrl(url, twit){
       if(!url){
         return resolve({error: 'no url'});
       }
+      console.log('explore url', url);
       var r = request({url: url, jar: true, timeout: 1000 * timeoutLimit, followAllRedirects: true}, function (error, response, html) {
         // timerTimeout && clearTimeout(timerTimeout);
 
@@ -64,7 +65,6 @@ var exploreUrl = function exploreUrl(url, twit){
                 }
               });
 
-              /////////// TODO INSERT IN DB /////////////////
               var document = {
                 url: url,
                 true_url: true_url,
