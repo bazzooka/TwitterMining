@@ -1,3 +1,3 @@
 export default {
-  isBouchon: true
+  isBouchon: false
 };

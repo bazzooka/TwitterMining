@@ -9,7 +9,12 @@ export const Home = React.createClass({
         <InfinitList
           elem={'ProfilItem'}
           list={this.props.profiles}
-          fetchProfiles={this.props.fetchProfiles}
+          fetchMethod={this.props.fetchProfiles}
+        />
+        <InfinitList
+          elem={'DocumentItem'}
+          list={this.props.documents}
+          fetchMethod={this.props.fetchDocuments}
         />
       </div>
     );

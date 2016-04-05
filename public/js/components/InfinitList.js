@@ -4,12 +4,14 @@ import React from 'react';
 import { throttle } from 'lodash';
 
 import { ProfilItem } from './ProfilItem';
+import { DocumentItem } from './DocumentItem';
 
 const THROTTLE_SCROLL = 100; // ms
 const INFINITE_SCROLL_TRIGGER = 250; // pixels remaining bottom of the container to trigger
 
 const ListItems = {
-  ProfilItem
+  ProfilItem,
+  DocumentItem
 };
 
 export const InfinitList = React.createClass({
@@ -26,35 +28,35 @@ export const InfinitList = React.createClass({
     this.loadMoreIfScrolledEnough = throttle(
       this.loadMoreIfScrolledEnough, THROTTLE_SCROLL
     );
+    this.props.fetchMethod(this.state.start, this.state.size);
   },
 
   loadMoreIfScrolledEnough(e) {
     const { scrollHeight, scrollTop, clientHeight } = this.refs.contents;
 
-
     if (scrollHeight - scrollTop - clientHeight > INFINITE_SCROLL_TRIGGER) return;
-    if (this.props.isLoading) return;
+    if (this.props.list.isLoading) return;
     // if (!this.props.isMore) return;
 
     this.setState({
       start: this.state.start + this.state.size
     }, ()=> {
-      this.props.fetchProfiles(this.state.start, this.state.size);
+      this.props.fetchMethod(this.state.start, this.state.size);
     });
   },
 
   componentWillReceiveProps(nextProps){
-    if(nextProps.list.items.response && nextProps.list.items.response.hits){
+    if(nextProps.list.items.length){
       this.setState({
-        nbResult: nextProps.list.items.response.hits.total,
-        hits: nextProps.list.items.response.hits.hits
+        nbResult: nextProps.list.total,
+        hits: nextProps.list.items
       })
     }
   },
 
   render() {
     const elts = this.state.hits.map((elt, key) => (
-      React.createElement(ListItems.ProfilItem, { key, profil: elt })
+      React.createElement(ListItems[this.props.elem], { key, item: elt })
     ));
     return (
       <div

@@ -23,13 +23,13 @@ const mapStateToProps = state => ({
 });
 
 const App = React.createClass({
-  componentDidMount(){
-    this.props.dispatch(fetchProfiles());
-    this.props.dispatch(fetchDocuments());
-  },
 
   requestProfiles(start, size){
     this.props.dispatch(fetchProfiles(start, size));
+  },
+
+  requestDocuments(start, size){
+    this.props.dispatch(fetchDocuments(start, size));
   },
 
   render() {
@@ -38,6 +38,7 @@ const App = React.createClass({
         {React.cloneElement(this.props.children, {
           profiles: this.props.profiles,
           documents: this.props.documents,
+          fetchDocuments: this.requestDocuments,
           fetchProfiles: this.requestProfiles
         })}
       </div>

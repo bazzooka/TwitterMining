@@ -34,7 +34,7 @@ app.get('/getProfils', function(req, res) {
   elastic.client.search({
     index: 'twitter',
     type: 'profil',
-    start: start || 0,
+    from: start || 0,
     size: size || 1,
     body: {
       sort: {
@@ -45,7 +45,6 @@ app.get('/getProfils', function(req, res) {
     }
 
   }).then(function(response){
-    console.dir(res);
     res.json({response: response});
   })
   .catch(function(err){
@@ -65,7 +64,7 @@ app.get('/getDocuments', function(req, res) {
   elastic.client.search({
     index: 'twitter',
     type: 'document',
-    start: start || 0,
+    from: start || 0,
     size: size || 1,
     body: {
       sort: {

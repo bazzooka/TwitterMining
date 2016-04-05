@@ -18,19 +18,19 @@ const requestDocuments = () => ({ type: REQUEST_DOCUMENTS });
 const receiveDocuments = documents => ({ type: RECEIVE_DOCUMENTS, documents });
 const rejectDocuments = error => ({ type: REJECT_DOCUMENTS, error });
 
-export function fetchProfiles() {
+export function fetchProfiles(start, size) {
   return (dispatch, getState) => {
     dispatch(requestProfiles());
-    return getProfiles(0, 5)
+    return getProfiles(start, size)
       .then(profiles => dispatch(receiveProfiles(profiles)))
       .catch(err => dispatch(rejectProfiles(err)));
   };
 }
 
-export function fetchDocuments() {
+export function fetchDocuments(start, size) {
   return (dispatch, getState) => {
     dispatch(requestDocuments());
-    return getDocuments(0, 5)
+    return getDocuments(start, size)
       .then(documents => dispatch(receiveDocuments(documents)))
       .catch(err => dispatch(rejectDocuments(err)));
   };
