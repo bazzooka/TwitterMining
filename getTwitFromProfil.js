@@ -58,6 +58,10 @@ var requestTweets = function requestTweets(username, nextPageUrl, maxId){
     var url = nextPageUrl ? (baseUrl + nextPageUrl) : (baseUrl + username);
     var r = request({url: url, jar: true, header: header, timeout: 1000 * 10}, function (error, response, html) {
 
+      if(error){
+        return reject(error);
+      }
+
       var $ = cheerio.load(html)
       var allTweets = $('table.tweet');
       var nextPage = $('.w-button-more a').attr('href');
