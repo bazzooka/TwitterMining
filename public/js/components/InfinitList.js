@@ -20,7 +20,7 @@ export const InfinitList = React.createClass({
       nbResult: 0,
       hits: [],
       start: 0,
-      size: 8
+      size: this.props.size || 8
     }
   },
 

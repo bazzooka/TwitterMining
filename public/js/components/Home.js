@@ -15,6 +15,7 @@ export const Home = React.createClass({
           elem={'DocumentItem'}
           list={this.props.documents}
           fetchMethod={this.props.fetchDocuments}
+          size={30}
         />
       </div>
     );
