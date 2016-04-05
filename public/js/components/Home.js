@@ -8,7 +8,8 @@ export const Home = React.createClass({
       <div className="home">
         <InfinitList
           elem={'ProfilItem'}
-          list={[1, 2, 3, 4, 5]}
+          list={this.props.profiles}
+          fetchProfiles={this.props.fetchProfiles}
         />
       </div>
     );

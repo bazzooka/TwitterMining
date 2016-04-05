@@ -1,21 +1,48 @@
+require('./App.scss');
+
 import React, { PropTypes } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-// import * as TodoActions from '../../actions/todos';
-require('./App.css');
+import {
+  REQUEST_PROFILES,
+  RECEIVE_PROFILES,
+  REJECT_PROFILES,
 
-const App = ({ children }) => (
-  <div className="app-container">
-    {children}
-  </div>
-);
+  REQUEST_DOCUMENTS,
+  RECEIVE_DOCUMENTS,
+  REJECT_DOCUMENTS,
 
-App.propTypes = {
-  children: PropTypes.object,
-};
-export default App;
-// export default connect(
-//   state => ({ todos: state.todos }),
-//   dispatch => ({ actions: bindActionCreators(TodoActions, dispatch) })
-// )(App);
+  fetchProfiles,
+  fetchDocuments
+} from '../../actions/';
+
+
+const mapStateToProps = state => ({
+  profiles: state.profiles,
+  documents: state.documents
+});
+
+const App = React.createClass({
+  componentDidMount(){
+    this.props.dispatch(fetchProfiles());
+    this.props.dispatch(fetchDocuments());
+  },
+
+  requestProfiles(start, size){
+    this.props.dispatch(fetchProfiles(start, size));
+  },
+
+  render() {
+    return (
+      <div className="app-container">
+        {React.cloneElement(this.props.children, {
+          profiles: this.props.profiles,
+          documents: this.props.documents,
+          fetchProfiles: this.requestProfiles
+        })}
+      </div>
+    );
+  }
+});
+
+export default connect(mapStateToProps)(App);
