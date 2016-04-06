@@ -293,6 +293,7 @@ var startCrawlingTweet = function startCrawlingTweet(tweet) {
       })
       .catch(function(err){
         console.log('err1', err);
+        process.exit();
       })
   });
 }
@@ -302,7 +303,7 @@ var infinitMiningProfils = function(){
     // Mining profils
     miningProfils();
   } catch(error){
-    miningProfils();
+    process.exit();
   }
 }
 
