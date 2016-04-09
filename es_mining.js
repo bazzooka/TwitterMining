@@ -22,6 +22,9 @@ var listenTwitter = function(){
    **/
   client.stream('statuses/filter', {track: config.topics.join(',')},  function(stream){
     stream.on('data', function(tweet) {
+      if(!tweet || !tweet.id_str){
+        return;
+      }
       var to_save = {
         crawled: false,
         created_at : tweet.created_at,
@@ -64,7 +67,7 @@ var infinitListenTwitter = function(){
   try{
     listenTwitter();
   } catch(error){
-console.log(error);
+    console.log(error);
     setTimeout(function(){
       listenTwitter();
     }, 16 * 1000 * 60); // Retry every 16 minutes API rate at 15min
