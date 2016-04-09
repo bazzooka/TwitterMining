@@ -104,7 +104,7 @@ var exploreUrl = function exploreUrl(url, twit){
       // }, timeoutLimit*1000);
 
     } catch(err){
-      // console.log('tag', err);
+      console.log('tag', err);
       return resolve({error: err});
     }
   });

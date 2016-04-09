@@ -78,31 +78,9 @@ var elastic = new ElasticSearch();
 
 
 
-elastic.client.search({
-  index: 'twitter',
-  type: 'tweet'
-
-}).then(function(res){
-  console.log(res);
-})
-.catch(function(err){
-  console.log(err);
-})
-
-
-
-
-
 // elastic.client.search({
 //   index: 'twitter',
-//   type: 'profil',
-//   body: {
-//     sort: {
-//       ratio: {
-//         order: 'desc'
-//       }
-//     }
-//   }
+//   type: 'tweet'
 //
 // }).then(function(res){
 //   console.log(res);
@@ -110,6 +88,28 @@ elastic.client.search({
 // .catch(function(err){
 //   console.log(err);
 // })
+
+
+
+
+
+elastic.client.search({
+  index: 'twitter',
+  type: 'profil',
+  body: {
+    sort: {
+      ratio: {
+        order: 'desc'
+      }
+    }
+  }
+
+}).then(function(res){
+  console.log(res);
+})
+.catch(function(err){
+  console.log(err);
+})
 
 
 
