@@ -2,6 +2,15 @@ var ElasticSearch = require('./ElasticAPI');
 
 var elastic = new ElasticSearch();
 
+// var request = require('request');
+//
+// var url = 'https://t.co/g9XJG5wCvj';
+// var r = request({url: url, jar: true, timeout: 1000 * 20, followAllRedirects: true}, function (error, response, html) {
+//   console.log('html', html);
+//
+// })
+
+
 // elastic.ping();
 
 
@@ -67,6 +76,23 @@ var elastic = new ElasticSearch();
 //   console.log(err);
 // })
 
+
+
+elastic.client.search({
+  index: 'twitter',
+  type: 'tweet'
+
+}).then(function(res){
+  console.log(res);
+})
+.catch(function(err){
+  console.log(err);
+})
+
+
+
+
+
 // elastic.client.search({
 //   index: 'twitter',
 //   type: 'profil',
@@ -89,23 +115,23 @@ var elastic = new ElasticSearch();
 
 
 
-elastic.client.search({
-  index: 'twitter',
-  type: 'document'
-  // body: {
-  //   sort: {
-  //     nbWord: {
-  //       order: 'desc'
-  //     }
-  //   }
-  // }
-
-}).then(function(res){
-  console.log(res);
-})
-.catch(function(err){
-  console.log(err);
-})
+// elastic.client.search({
+//   index: 'twitter',
+//   type: 'document'
+//   // body: {
+//   //   sort: {
+//   //     nbWord: {
+//   //       order: 'desc'
+//   //     }
+//   //   }
+//   // }
+//
+// }).then(function(res){
+//   console.log(res);
+// })
+// .catch(function(err){
+//   console.log(err);
+// })
 
 
 

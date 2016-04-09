@@ -28,7 +28,7 @@ var exploreUrl = function exploreUrl(url, twit){
       console.log('explore url', url);
       var r = request({url: url, jar: true, timeout: 1000 * timeoutLimit, followAllRedirects: true}, function (error, response, html) {
         // timerTimeout && clearTimeout(timerTimeout);
-
+        console.log('response for url', url);
         if (!error && response.statusCode == 200) {
           try{
             var $ = cheerio.load(html, {normalizeWhitespace: true});
@@ -77,7 +77,7 @@ var exploreUrl = function exploreUrl(url, twit){
                 postedAt: snowflake2Utc(twit.id),
                 crawled_at: Date.now()
               };
-              
+
               return elastic
                 .insertDocument(document)
                 .then(function(){
