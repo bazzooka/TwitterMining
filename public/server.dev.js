@@ -48,7 +48,7 @@ app.get('/getProfils', function(req, res) {
     res.json({response: response});
   })
   .catch(function(err){
-    console.log(err);
+    console.log('err1', err);
   })
 });
 
@@ -75,11 +75,10 @@ app.get('/getDocuments', function(req, res) {
     }
 
   }).then(function(response){
-    console.dir(res);
     res.json({response: response});
   })
   .catch(function(err){
-    console.log(err);
+    console.log('err2', err);
   })
 });
 
@@ -91,7 +90,7 @@ app.get('*', function(req, res) {
 
 app.listen(3000, function(err) {
   if (err) {
-    console.log(err);
+    console.log('err3', err);
     return;
   }
 
