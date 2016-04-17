@@ -95,7 +95,7 @@ var elastic = new ElasticSearch();
 
 elastic.client.search({
   index: 'twitter',
-  type: 'profil',
+  type: 'tweet',
   body: {
     sort: {
       ratio: {
